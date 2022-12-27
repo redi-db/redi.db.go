@@ -3,7 +3,7 @@ Library for working with RediDB in GoLang
 ## Installation
 
 ```bash
-go get go.mongodb.org/mongo-driver/mongo
+go get github.com/redi-db/redi.db.go
 ```
 <br><br>
 **Creaiting:**
@@ -33,6 +33,32 @@ func main() {
 }
 ```
 
+<br><br>
+**Creating**
+```go
+  // The first argument can be empty, so only the filter will be accepted, or vice versa
+  response, err := exampleCollection.Create("key", redidb.CreateData{"id": 1})
+  if err != nil {
+    panic(err)
+  }
+  
+  fmt.Println(response)
+  response, err = exampleCollection.CreateMany([]redidb.CreateData{
+  	{
+	    "id": 2
+	},
+	
+	{
+	    "_key": "user3" // key (_id)
+	    "id": 3
+	},
+  })
+  if err != nil {
+    panic(err)
+  }
+
+  fmt.Println(response)
+```
 <br><br>
 **Search**
 ```go
