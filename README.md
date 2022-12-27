@@ -6,7 +6,7 @@ Library for working with RediDB in GoLang
 go get github.com/redi-db/redi.db.go
 ```
 <br><br>
-**Creaiting:**
+**Init database**
 ```go
 var db = redidb.DB{
 	Login:    "root",
@@ -17,7 +17,6 @@ var db = redidb.DB{
 }
 ```
 <br><br>
-**Init database**
 ```go
 func main() {
   if err := db.Connect(); err != nil {
