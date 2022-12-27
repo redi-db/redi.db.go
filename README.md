@@ -57,6 +57,13 @@ func main() {
   }
 
   fmt.Println(response)
+  
+  response, err = exampleCollection.FindOrCreate(redidb.Filter{"id": 100}, redidb.CreateData{"id": 100, "banned": false})
+  if err != nil {
+    panic(err)
+  }
+  
+  fmt.Println(response)
 ```
 <br><br>
 **Search**
