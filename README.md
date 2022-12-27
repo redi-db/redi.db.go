@@ -1,6 +1,11 @@
 # Redi.DB.go
 Library for working with RediDB in GoLang
+## Installation
 
+```bash
+go get go.mongodb.org/mongo-driver/mongo
+```
+<br><br>
 **Creaiting:**
 ```go
 var db = redidb.DB{
