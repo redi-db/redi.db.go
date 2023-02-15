@@ -135,6 +135,8 @@ func (this *collection) Search(filter Filter) ([]interface{}, error) {
 }
 
 func (this *collection) SearchOne(filter Filter) (interface{}, error) {
+	filter["$max"] = 1
+
 	req := fasthttp.AcquireRequest()
 	req.SetBody(toJson(struct {
 		Login    string `json:"login"`
@@ -279,7 +281,7 @@ func (this *collection) SearchOrCreate(filter Filter, create CreateData) (map[st
 		}
 	}
 
-	return data.(map[string]interface{}), nil
+	return data.([]map[string]interface{})[0], nil
 }
 
 func getAnswer(response *fasthttp.Response) (any, error) {
