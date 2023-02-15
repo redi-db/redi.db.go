@@ -1,8 +1,8 @@
 module github.com/redi-db/redi.db.go
 
-go 1.20
+go 1.19
 
-require github.com/valyala/fasthttp v1.44.0
+require github.com/valyala/fasthttp v1.43.0
 
 require (
 	github.com/andybalholm/brotli v1.0.4 // indirect

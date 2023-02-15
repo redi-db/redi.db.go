@@ -19,14 +19,6 @@ var db = redidb.DB{
 <br><br>
 ```go
 func main() {
-  if err := db.Connect(); err != nil {
-		if err == redidb.CONNECTION_FAILED {
-			panic("Failed to connect to the database :(")
-		} else if err == redidb.AUTHORIZATION_ERROR {
-			panic("Invalid login or password :(")
-		}
-	}
-
   exampleDatabase := db.Database("ExampleProject")
   exampleCollection := exampleDatabase.Collection("exampleCollection")
 }
@@ -35,30 +27,14 @@ func main() {
 <br><br>
 **Creating**
 ```go
-  // The first argument can be empty, so only the filter will be accepted, or vice versa
-  response, err := exampleCollection.Create("key", redidb.CreateData{"id": 1})
+  response, err := exampleCollection.Create(redidb.CreateData{"id": 1})
   if err != nil {
     panic(err)
   }
   
   fmt.Println(response)
-  response, err = exampleCollection.CreateMany([]redidb.CreateData{
-  	{
-	    "id": 2
-	},
-	
-	{
-	    "_key": "user3" // key (_id)
-	    "id": 3
-	},
-  })
-  if err != nil {
-    panic(err)
-  }
-
-  fmt.Println(response)
   
-  response, err = exampleCollection.FindOrCreate(redidb.Filter{"id": 100}, redidb.CreateData{"id": 100, "banned": false})
+  response, err = exampleCollection.SearchOrCreate(redidb.Filter{"id": 2}, redidb.CreateData{"id": 2})
   if err != nil {
     panic(err)
   }
@@ -90,13 +66,12 @@ func main() {
 <br><br>
 **Deleting**
 ```go
-  // The first argument can be empty, so only the filter will be accepted, or vice versa
-  deleteCount, err := exampleCollection.Delete("", redidb.Filter{})
+  deleteData, err := exampleCollection.Delete(redidb.Filter{})
   if err != nil {
     panic(err)
   }
 
-  fmt.Println(deleteCount)
+  fmt.Println(deleteData)
 ```
 
 <br><br>
@@ -104,7 +79,7 @@ func main() {
 ```go
   updated, err := exampleCollection.Update(redidb.Filter{
     "username": "test1",
-  }, []redidb.UpdateData{
+  }, redidb.UpdateData{
     {
       "username": "test2",
     },
