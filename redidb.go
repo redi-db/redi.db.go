@@ -279,7 +279,7 @@ func (this *collection) SearchOrCreate(filter Filter, create CreateData) (map[st
 		}
 	}
 
-	return data.([]map[string]interface{})[0], nil
+	return data.(map[string]interface{}), nil
 }
 
 func getAnswer(response *fasthttp.Response) (any, error) {
