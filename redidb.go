@@ -290,13 +290,13 @@ func (this *collection) SearchOrCreate(filter Filter, create CreateData) (map[st
 		return nil, err
 	}
 
-	if reflect.TypeOf(data).String() != "map[string]interface {}" {
-		if !data.(map[string]interface{})["success"].(bool) {
+	if reflect.TypeOf(data).String() == "map[string]interface {}" {
+		if data.(map[string]interface{})["success"] != nil && !data.(map[string]interface{})["success"].(bool) {
 			return nil, errors.New(data.(map[string]interface{})["message"].(string))
 		}
 	}
 
-	return data.([]map[string]interface{})[0], nil
+	return data.(map[string]interface{}), nil
 }
 
 func getAnswer(response *fasthttp.Response) (any, error) {
