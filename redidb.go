@@ -62,7 +62,7 @@ func (this *collection) Collection(collection string) collection {
 func (this *collection) Create(createData ...CreateData) ([]interface{}, error) {
 	req := fasthttp.AcquireRequest()
 	req.SetBody(toJson(struct {
-		Database    string `json:"database"`
+		Database   string `json:"database"`
 		Collection string `json:"collection"`
 
 		Login    string `json:"login"`
@@ -99,7 +99,7 @@ func (this *collection) Create(createData ...CreateData) ([]interface{}, error) 
 func (this *collection) Search(filter Filter) ([]interface{}, error) {
 	req := fasthttp.AcquireRequest()
 	req.SetBody(toJson(struct {
-		Database    string `json:"database"`
+		Database   string `json:"database"`
 		Collection string `json:"collection"`
 
 		Login    string `json:"login"`
@@ -142,7 +142,7 @@ func (this *collection) SearchOne(filter Filter) (interface{}, error) {
 
 	req := fasthttp.AcquireRequest()
 	req.SetBody(toJson(struct {
-		Database    string `json:"database"`
+		Database   string `json:"database"`
 		Collection string `json:"collection"`
 
 		Login    string `json:"login"`
@@ -183,7 +183,7 @@ func (this *collection) SearchOne(filter Filter) (interface{}, error) {
 func (this *collection) Delete(filter Filter) ([]interface{}, error) {
 	req := fasthttp.AcquireRequest()
 	req.SetBody(toJson(struct {
-		Database    string `json:"database"`
+		Database   string `json:"database"`
 		Collection string `json:"collection"`
 
 		Login    string `json:"login"`
@@ -220,7 +220,51 @@ func (this *collection) Delete(filter Filter) ([]interface{}, error) {
 func (this *collection) Update(filter Filter, update UpdateData) ([]interface{}, error) {
 	req := fasthttp.AcquireRequest()
 	req.SetBody(toJson(struct {
-		Database    string `json:"database"`
+		Database   string `json:"database"`
+		Collection string `json:"collection"`
+
+		Login    string `json:"login"`
+		Password string `json:"password"`
+
+		Data map[string]any `json:"data"`
+	}{
+		this.database, this.collection, this.db.Login, this.db.Password, map[string]any{
+			"filter": filter,
+			"update": update,
+		},
+	}))
+
+	req.Header.SetMethod("PATCH")
+	req.Header.SetContentType("application/json")
+	req.SetRequestURI(this.db.url)
+	res := fasthttp.AcquireResponse()
+	if err := fasthttp.Do(req, res); err != nil {
+		return nil, CONNECTION_FAILED
+	}
+
+	fasthttp.ReleaseRequest(req)
+	data, err := getAnswer(res)
+	if err != nil {
+		return nil, err
+	}
+
+	if reflect.TypeOf(data).String() != "[]interface {}" {
+		if !data.(map[string]interface{})["success"].(bool) {
+			return nil, errors.New(data.(map[string]interface{})["message"].(string))
+		}
+	}
+
+	if len(data.([]interface{})) == 0 {
+		return nil, NOT_FOUND
+	}
+
+	return data.([]interface{}), nil
+}
+
+func (this *collection) InstantUpdate(filter Filter, update UpdateData) ([]interface{}, error) {
+	req := fasthttp.AcquireRequest()
+	req.SetBody(toJson(struct {
+		Database   string `json:"database"`
 		Collection string `json:"collection"`
 
 		Login    string `json:"login"`
@@ -264,7 +308,7 @@ func (this *collection) Update(filter Filter, update UpdateData) ([]interface{},
 func (this *collection) SearchOrCreate(filter Filter, create CreateData) (map[string]interface{}, error) {
 	req := fasthttp.AcquireRequest()
 	req.SetBody(toJson(struct {
-		Database    string `json:"database"`
+		Database   string `json:"database"`
 		Collection string `json:"collection"`
 
 		Login    string `json:"login"`
