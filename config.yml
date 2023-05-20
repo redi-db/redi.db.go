@@ -1,0 +1,14 @@
+server:
+    port: 5000
+    accessToken: superpupertoken
+
+settings:
+    max_threads: 30000
+
+database:
+    database_name: RediPast
+    ip: localhost
+    port: 5000
+
+    login: root
+    password: root
